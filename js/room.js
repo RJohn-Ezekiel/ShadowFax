@@ -1,97 +1,105 @@
 import { db } from "./firebase.js";
 import { ref, push, onChildAdded, set, remove, get } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
-let username=localStorage.getItem("shadowfaxUser");
-let room=localStorage.getItem("shadowfaxRoom");
-let admin=(localStorage.getItem("shadowfaxAdmin")==="true");
+// Retrieve user info
+let username = localStorage.getItem("shadowfaxUser");
+let room = localStorage.getItem("shadowfaxRoom");
+let admin = localStorage.getItem("shadowfaxAdmin") === "true";
 
-const terminal=document.getElementById("terminal");
+// Terminal container
+const terminal = document.getElementById("terminal");
 
-function ts(){
-let d=new Date();
-return `[${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}]`;
+// Timestamp function
+function ts() {
+    let d = new Date();
+    return `[${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}]`;
 }
 
-function log(text){
-terminal.innerHTML+=text+"<br>";
-terminal.scrollTop=terminal.scrollHeight;
+// Log to terminal
+function log(text, color = "#c0c0c0") {
+    const span = document.createElement("span");
+    span.style.color = color;
+    span.innerHTML = text;
+    terminal.appendChild(span);
+    terminal.appendChild(document.createElement("br"));
+    terminal.scrollTop = terminal.scrollHeight;
 }
 
-set(ref(db,"rooms/"+room+"/users/"+username),true);
+// Add user to room
+set(ref(db, "rooms/" + room + "/users/" + username), true);
 
-push(ref(db,"rooms/"+room+"/messages"),{
-user:"system",
-text:username+" joined"
+// Notify system that user joined
+push(ref(db, "rooms/" + room + "/messages"), {
+    user: "system",
+    text: username + " joined"
 });
 
-onChildAdded(ref(db,"rooms/"+room+"/messages"),data=>{
+// Listen for messages
+onChildAdded(ref(db, "rooms/" + room + "/messages"), data => {
+    const m = data.val();
 
-let m=data.val();
+    let color = "#c0c0c0"; // default
+    if (m.user === "system") color = "#800080";      // purple
+    else if (m.user === "BROADCAST") color = "#ff0000"; // red
+    else if (m.user === "WARNING") color = "#ffff00"; // yellow
 
-log(`${ts()} ${m.user}: ${m.text}`);
-
+    log(`${ts()} ${m.user}: ${m.text}`, color);
 });
 
-document.getElementById("msg").addEventListener("keypress",function(e){
-if(e.key==="Enter") send();
+// Send on Enter key
+document.getElementById("msg").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") send();
 });
 
-function send(){
+function send() {
+    const text = msg.value.trim();
+    if (!text) return;
 
-let text=msg.value;
+    // Admin Commands
+    if (admin) {
+        if (text.startsWith("/broadcast ")) {
+            let msgText = text.replace("/broadcast ", "");
+            push(ref(db, "rooms/" + room + "/messages"), {
+                user: "BROADCAST",
+                text: msgText
+            });
+        }
+        else if (text.startsWith("/warning ")) {
+            let msgText = text.replace("/warning ", "");
+            push(ref(db, "rooms/" + room + "/messages"), {
+                user: "WARNING",
+                text: msgText
+            });
+        }
+        else if (text.startsWith("/kick ")) {
+            let target = text.replace("/kick ", "");
+            remove(ref(db, "rooms/" + room + "/users/" + target));
+            push(ref(db, "rooms/" + room + "/messages"), {
+                user: "system",
+                text: target + " was kicked by admin"
+            });
+        }
+        else if (text === "/clearchat") {
+            remove(ref(db, "rooms/" + room + "/messages"));
+            push(ref(db, "rooms/" + room + "/messages"), {
+                user: "system",
+                text: "Chat cleared by admin"
+            });
+        }
+        else if (text === "/users") {
+            get(ref(db, "rooms/" + room + "/users")).then(snap => {
+                const users = snap.val() || {};
+                log("Users in room:", "#00ff00");
+                for (let u in users) {
+                    log(`-rw-r--r-- 1 user shadowfax ${u}`, "#00ff00");
+                }
+            });
+        }
+    }
 
-if(text.startsWith("/broadcast ") && admin){
-
-let msg=text.replace("/broadcast ","");
-
-push(ref(db,"rooms/"+room+"/messages"),{
-user:"BROADCAST",
-text:msg
-});
-
-}
-
-else if(text.startsWith("/warning ") && admin){
-
-let msg=text.replace("/warning ","");
-
-push(ref(db,"rooms/"+room+"/messages"),{
-user:"WARNING",
-text:msg
-});
-
-}
-
-else if(text.startsWith("/kick ") && admin){
-
-let target=text.replace("/kick ","");
-
-remove(ref(db,"rooms/"+room+"/users/"+target));
-
-push(ref(db,"rooms/"+room+"/messages"),{
-user:"system",
-text:target+" was kicked"
-});
-
-}
-
-else if(text==="/users"){
-
-get(ref(db,"rooms/"+room+"/users")).then(snap=>{
-
-let users=snap.val();
-
-for(let u in users){
-log(`-rw-r--r-- 1 user shadowfax ${u}`);
-}
-
-});
-
-}
-
-else if(text==="/neofetch"){
-
-log(`
+    // Non-command messages
+    if (text === "/neofetch") {
+        log(`
 ███████╗
 ██╔════╝
 ███████╗   ShadowFax
@@ -100,18 +108,14 @@ log(`
 ╚══════╝   Room: ${room}
             Backend: Firebase
             Admin: ${admin}
-`);
+`, "#00ff00");
+    } 
+    else if (!text.startsWith("/")) {
+        push(ref(db, "rooms/" + room + "/messages"), {
+            user: username,
+            text: text
+        });
+    }
 
-}
-
-else{
-
-push(ref(db,"rooms/"+room+"/messages"),{
-user:username,
-text:text
-});
-
-}
-
-msg.value="";
+    msg.value = "";
 }
