@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ShadowFax Login</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 id="title"></h1>
+
+<input id="username" placeholder="username"><br>
+<input id="password" type="password" placeholder="password"><br>
+
+<button onclick="login()">ENTER</button>
+
+</div>
+
+<script type="module" src="js/login.js"></script>
+
+<script>
+
+const text="SHADOWFAX";
+let i=0;
+
+function type(){
+if(i<text.length){
+document.getElementById("title").innerHTML+=text.charAt(i);
+i++;
+setTimeout(type,120);
+}
+}
+
+type();
+
+</script>
+
+</body>
+</html>
