@@ -1,16 +1,20 @@
 import { db } from "./firebase.js";
 import { ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
-let user=localStorage.getItem("shadowfaxUser");
 let admin=(localStorage.getItem("shadowfaxAdmin")==="true");
 
 const roomsDiv=document.getElementById("rooms");
+
+if(admin){
+document.getElementById("adminPanel").style.display="block";
+}
 
 onValue(ref(db,"rooms"),snap=>{
 
 roomsDiv.innerHTML="";
 
 let rooms=snap.val();
+if(!rooms) return;
 
 for(let r in rooms){
 
