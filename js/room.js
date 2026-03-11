@@ -8,18 +8,13 @@ let admin=(localStorage.getItem("shadowfaxAdmin")==="true");
 const terminal=document.getElementById("terminal");
 
 function ts(){
-
 let d=new Date();
-
 return `[${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}]`;
-
 }
 
 function log(text){
-
 terminal.innerHTML+=text+"<br>";
 terminal.scrollTop=terminal.scrollHeight;
-
 }
 
 set(ref(db,"rooms/"+room+"/users/"+username),true);
@@ -38,9 +33,7 @@ log(`${ts()} ${m.user}: ${m.text}`);
 });
 
 document.getElementById("msg").addEventListener("keypress",function(e){
-
 if(e.key==="Enter") send();
-
 });
 
 function send(){
@@ -89,9 +82,7 @@ get(ref(db,"rooms/"+room+"/users")).then(snap=>{
 let users=snap.val();
 
 for(let u in users){
-
 log(`-rw-r--r-- 1 user shadowfax ${u}`);
-
 }
 
 });
@@ -123,5 +114,4 @@ text:text
 }
 
 msg.value="";
-
 }
