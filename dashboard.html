@@ -7,22 +7,29 @@
 
 <body>
 
+<canvas id="matrix"></canvas>
+
 <div class="container">
 
 <h2>SHADOWFAX NETWORK</h2>
 
 <div id="rooms"></div>
 
-<br>
+<div id="adminPanel" style="display:none">
 
-<input id="newroom" placeholder="new room name">
+<h3>Create Room</h3>
+
+<input id="newroom" placeholder="room name">
 <input id="roompass" placeholder="room password">
 
 <button onclick="createRoom()">CREATE ROOM</button>
 
 </div>
 
+</div>
+
 <script type="module" src="js/dashboard.js"></script>
+<script src="js/matrix.js"></script>
 
 </body>
 </html>
