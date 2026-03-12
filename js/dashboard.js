@@ -1,22 +1,36 @@
 import { db } from "./firebase.js";
-import { ref,onChildAdded,set }
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+import { ref,onChildAdded,set } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+let username=localStorage.getItem("shadowfaxUser");
+
+if(!username){
+
+window.location="index.html";
+
+}
 
 let admin=localStorage.getItem("shadowfaxAdmin")==="true";
 
-if(!admin)
+const roomList=document.getElementById("roomList");
+const adminPanel=document.getElementById("adminPanel");
+
+if(!admin){
+
 adminPanel.style.display="none";
 
-onChildAdded(ref(db,"rooms"),snap=>{
+}
 
-let room=snap.key;
+onChildAdded(ref(db,"rooms"),data=>{
+
+let r=data.key;
 
 let div=document.createElement("div");
-
 div.className="roomItem";
 
-div.innerHTML=
-room+" <button onclick='joinRoom(\""+room+"\")'>JOIN</button>";
+div.innerHTML=`
+<span>${r}</span>
+<button onclick="joinRoom('${r}')">JOIN</button>
+`;
 
 roomList.appendChild(div);
 
@@ -30,12 +44,17 @@ window.location="room.html";
 
 }
 
-createRoomBtn.onclick=function(){
+if(admin){
 
-if(!admin) return;
+document.getElementById("createRoomBtn").onclick=function(){
 
 let r=roomname.value;
+let p=roompass.value;
 
-set(ref(db,"rooms/"+r),true);
+set(ref(db,"rooms/"+r),{
+pass:p
+});
+
+}
 
 }
