@@ -6,8 +6,10 @@ const adminPanel = document.getElementById("adminPanel");
 
 let admin = localStorage.getItem("shadowfaxAdmin") === "true";
 
-if(!admin){
-adminPanel.style.display="none";
+const adminPanel = document.getElementById("adminPanel");
+
+if(admin === false){
+adminPanel.style.display = "none";
 }
 
 onChildAdded(ref(db,"rooms"),data=>{
@@ -70,3 +72,4 @@ if(t==="white") document.body.style.color="#ffffff";
 }
 
 applyTheme(localStorage.getItem("shadowfaxTheme") || "green");
+
