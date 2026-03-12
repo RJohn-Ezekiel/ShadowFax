@@ -1,57 +1,47 @@
 import { db } from "./firebase.js";
-import { ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+import { ref, onChildAdded, set } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
-let admin=(localStorage.getItem("shadowfaxAdmin")==="true");
+let rooms=document.getElementById("rooms");
 
-const roomsDiv=document.getElementById("rooms");
+onChildAdded(ref(db,"rooms"),data=>{
 
-if(admin){
-document.getElementById("adminPanel").style.display="block";
-}
-
-onValue(ref(db,"rooms"),snap=>{
-
-roomsDiv.innerHTML="";
-
-let rooms=snap.val();
-if(!rooms) return;
-
-for(let r in rooms){
-
-let users=rooms[r].users?Object.keys(rooms[r].users).length:0;
+let r=data.key;
 
 let div=document.createElement("div");
 
-div.innerHTML=`${r} | users:${users}
-<button onclick="enterRoom('${r}')">JOIN</button>
-${admin?`<button onclick="deleteRoom('${r}')">DELETE</button>`:""}`;
+div.innerHTML=r+" <button onclick='joinRoom(\""+r+"\")'>JOIN</button>";
 
-roomsDiv.appendChild(div);
-
-}
+rooms.appendChild(div);
 
 });
 
-window.enterRoom=function(room){
+window.createRoom=function(){
 
-localStorage.setItem("shadowfaxRoom",room);
+let r=roomname.value;
+let p=roompass.value;
+
+set(ref(db,"rooms/"+r),{
+pass:p
+});
+
+}
+
+window.joinRoom=function(r){
+
+localStorage.setItem("shadowfaxRoom",r);
+
 window.location="room.html";
 
 }
 
-window.deleteRoom=function(room){
+document.getElementById("theme").onchange=function(){
 
-if(confirm("Delete room "+room+"?")){
-remove(ref(db,"rooms/"+room));
-}
+let t=this.value;
 
-}
+localStorage.setItem("theme",t);
 
-window.createRoom=function(){
-
-let room=document.getElementById("newroom").value;
-let pass=document.getElementById("roompass").value;
-
-set(ref(db,"rooms/"+room+"/pass"),pass);
+if(t==="blue") document.body.style.color="#00aaff";
+if(t==="white") document.body.style.color="#ffffff";
+if(t==="green") document.body.style.color="#00ff00";
 
 }
