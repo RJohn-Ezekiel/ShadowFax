@@ -1,53 +1,37 @@
-const canvas = document.getElementById("matrixCanvas");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("matrixCanvas");
+const ctx=canvas.getContext("2d");
 
-/* FULLSCREEN CANVAS */
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
 
-function resizeCanvas(){
+const letters="アァカサタナハマヤャラワ01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const matrix=letters.split("");
 
-canvas.height = window.innerHeight;
-canvas.width = window.innerWidth;
+const fontSize=16;
 
-}
+const columns=canvas.width/fontSize;
 
-resizeCanvas();
+const drops=[];
 
-window.addEventListener("resize",resizeCanvas);
-
-/* MATRIX CHARACTERS */
-
-const letters = "アァカサタナハマヤャラワ01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const matrix = letters.split("");
-
-const fontSize = 16;
-
-let columns = canvas.width / fontSize;
-
-let drops = [];
-
-for(let x=0; x<columns; x++){
-drops[x] = 1;
-}
-
-/* DRAW LOOP */
+for(let x=0;x<columns;x++)
+drops[x]=1;
 
 function draw(){
 
-ctx.fillStyle = "rgba(0,0,0,0.05)";
+ctx.fillStyle="rgba(0,0,0,0.05)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-ctx.fillStyle = "#00ff00";
-ctx.font = fontSize + "px monospace";
+ctx.fillStyle="#00ff00";
+ctx.font=fontSize+"px monospace";
 
 for(let i=0;i<drops.length;i++){
 
-let text = matrix[Math.floor(Math.random()*matrix.length)];
+let text=matrix[Math.floor(Math.random()*matrix.length)];
 
 ctx.fillText(text,i*fontSize,drops[i]*fontSize);
 
-if(drops[i]*fontSize > canvas.height && Math.random() > 0.975){
-drops[i] = 0;
-}
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+drops[i]=0;
 
 drops[i]++;
 
