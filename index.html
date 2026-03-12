@@ -7,15 +7,15 @@
 <script type="module" src="auth.js"></script>
 </head>
 <body>
-<canvas id="matrixCanvas"></canvas>
-<div class="loginBox">
-  <h1 id="shadowfaxTitle"></h1>
-  <input type="text" id="username" placeholder="Username"><br><br>
-  <input type="password" id="password" placeholder="Password"><br><br>
-  <button onclick="login()">Login</button>
-</div>
-<script type="module" src="js/matrix.js"></script>
-<script>
+  <div class="loginBox">
+    <h1 id="shadowfaxTitle"></h1>
+    <input type="text" id="username" placeholder="Username"><br><br>
+    <input type="password" id="password" placeholder="Password"><br><br>
+    <button type="button" onclick="login()">Login</button>
+  </div>
+
+  <script type="module" src="js/matrix.js"></script>
+  <script type="module" src="auth.js"></script>
   // Typing ShadowFax title
   const title = "ShadowFax";
   const el = document.getElementById("shadowfaxTitle");
@@ -31,3 +31,4 @@
 </script>
 </body>
 </html>
+
