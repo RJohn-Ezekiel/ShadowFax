@@ -27,10 +27,15 @@ font-family: monospace;
 }
 
 input{
-background:black;
-color:#00ff00;
-border:1px solid #00ff00;
-padding:5px;
+
+background: black;
+color: #00ff00;
+
+border: 1px solid #00ff00;
+
+width: 100%;
+padding: 8px;
+
 }
 
 button{
@@ -51,4 +56,5 @@ margin:auto;
 margin-top:200px;
 text-align:center;
 }
+
 
