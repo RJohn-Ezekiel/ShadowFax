@@ -6,8 +6,6 @@ margin:0;
 padding:20px;
 }
 
-/* MATRIX BACKGROUND */
-
 #matrixCanvas{
 position:fixed;
 top:0;
@@ -15,118 +13,38 @@ left:0;
 width:100%;
 height:100%;
 z-index:-1;
-pointer-events:none;
 }
-
-/* MAIN CHAT CONTAINER */
-
-#chatContainer{
-max-width:900px;
-margin:auto;
-background:rgba(0,0,0,0.85);
-border:1px solid #00ff00;
-padding:15px;
-box-shadow:0 0 10px #00ff00;
-}
-
-/* CHAT MESSAGE WINDOW */
 
 #chatBox{
-background:rgba(0,0,0,0.95);
-height:420px;
+height:500px;
 overflow-y:auto;
-padding:10px;
 border:1px solid #00ff00;
+padding:10px;
 margin-bottom:10px;
 }
-
-/* INPUT FIELD */
 
 input{
 background:black;
 color:#00ff00;
 border:1px solid #00ff00;
-width:100%;
-padding:10px;
-font-family:monospace;
-outline:none;
+padding:5px;
 }
-
-/* BUTTON STYLE */
 
 button{
 background:black;
 color:#00ff00;
 border:1px solid #00ff00;
-padding:6px 12px;
-margin:5px 2px;
-cursor:pointer;
-font-family:monospace;
+padding:5px;
+margin:5px;
 }
-
-button:hover{
-background:#00ff00;
-color:black;
-}
-
-/* ROOM LIST */
 
 .roomItem{
 margin:10px 0;
-padding:5px;
-border-bottom:1px dashed #00ff00;
 }
-
-/* LOGIN BOX */
 
 .loginBox{
-width:320px;
+width:300px;
 margin:auto;
-margin-top:180px;
+margin-top:200px;
 text-align:center;
-background:rgba(0,0,0,0.9);
-border:1px solid #00ff00;
-padding:20px;
-box-shadow:0 0 10px #00ff00;
-}
-
-/* SCROLLBAR (terminal style) */
-
-::-webkit-scrollbar{
-width:8px;
-}
-
-::-webkit-scrollbar-track{
-background:black;
-}
-
-::-webkit-scrollbar-thumb{
-background:#00ff00;
-}
-
-/* TIMESTAMP STYLE */
-
-.timestamp{
-color:#00aaff;
-}
-
-/* USER COLORS */
-
-.user{
-color:#00ff00;
-}
-
-.admin{
-color:#00aaff;
-}
-
-.system{
-color:#ff4444;
-}
-
-/* TYPING INDICATOR */
-
-.typing{
-color:#ffaa00;
-font-style:italic;
-}
+}vv
