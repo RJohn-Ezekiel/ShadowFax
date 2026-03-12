@@ -16,18 +16,20 @@ z-index:-1;
 }
 
 #chatBox{
-height:500px;
-overflow-y:auto;
-border:1px solid #00ff00;
-padding:10px;
-margin-bottom:10px;
+background: rgba(0,0,0,0.92);
+padding: 10px;
+height: 420px;
+overflow-y: scroll;
+border: 1px solid #00ff00;
+font-family: monospace;
 }
 
 input{
 background:black;
 color:#00ff00;
-border:1px solid #00ff00;
-padding:5px;
+border: 1px solid #00ff00;
+width:100%;
+padding:8px;
 }
 
 button{
@@ -36,6 +38,12 @@ color:#00ff00;
 border:1px solid #00ff00;
 padding:5px;
 margin:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#00ff00;
+color:black;
 }
 
 .roomItem{
@@ -45,6 +53,11 @@ margin:10px 0;
 .loginBox{
 width:300px;
 margin:auto;
-margin-top:200px;
+margin-top:150px;
 text-align:center;
-}vv
+}
+
+#neofetch pre{
+color:#00ff00;
+font-family:monospace;
+}
