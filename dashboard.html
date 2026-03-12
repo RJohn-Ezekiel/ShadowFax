@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>ShadowFax Dashboard</title>
+
+<title>ShadowFax Network</title>
 <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body>
 
-<h2>Available Rooms</h2>
+<div class="container">
 
-<div id="rooms"></div>
+<h1>ShadowFax Network</h1>
 
-<hr>
+<div id="roomList"></div>
+
+<div id="adminPanel" class="adminPanel">
+
+<h2>Admin Control</h2>
 
 <input id="roomname" placeholder="room name">
 <input id="roompass" placeholder="room password">
 
-<button onclick="createRoom()">Create Room</button>
+<button id="createRoomBtn">Create Room</button>
 
-<select id="theme">
+</div>
+
+<div class="themePanel">
+
+<label>Theme</label>
+
+<select id="themeSelector">
+
 <option value="green">Green</option>
 <option value="blue">Blue</option>
 <option value="white">White</option>
+
 </select>
+
+</div>
+
+</div>
 
 <script type="module" src="js/dashboard.js"></script>
 
