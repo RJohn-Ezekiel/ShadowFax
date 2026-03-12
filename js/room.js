@@ -19,6 +19,8 @@ let admin = localStorage.getItem("shadowfaxAdmin") === "true";
 
 document.getElementById("roomTitle").innerText = "Room: " + room;
 
+const startTime = Date.now();
+
 /* USER JOIN */
 
 set(ref(db,"users/"+room+"/"+user),true);
@@ -29,7 +31,7 @@ msg:user+" joined the network",
 time:new Date().toLocaleString()
 });
 
-/* REMOVE GHOST USERS ON EXIT */
+/* USER LEAVE */
 
 window.addEventListener("beforeunload",()=>{
 
@@ -43,25 +45,37 @@ time:new Date().toLocaleString()
 
 });
 
-/* SEND MESSAGE */
+/* SEND BUTTON */
 
 sendBtn.onclick = sendMessage;
 
-msgInput.addEventListener("keypress",function(e){
-if(e.key==="Enter") sendMessage();
+/* ENTER KEY */
+
+msgInput.addEventListener("keydown",function(e){
+
+if(e.key==="Enter"){
+sendMessage();
+}
+
 });
+
+/* SEND MESSAGE */
 
 function sendMessage(){
 
 let msg = msgInput.value.trim();
 
-if(msg==="") return;
+if(msg === "") return;
+
+/* COMMAND CHECK */
 
 if(msg.startsWith("/")){
 runCommand(msg);
 msgInput.value="";
 return;
 }
+
+/* NORMAL MESSAGE */
 
 push(ref(db,"messages/"+room),{
 user:user,
@@ -70,6 +84,7 @@ time:new Date().toLocaleString()
 });
 
 msgInput.value="";
+
 }
 
 /* DISPLAY MESSAGES */
@@ -88,33 +103,29 @@ chatBox.scrollTop = chatBox.scrollHeight;
 
 });
 
-/* COMMAND HANDLER */
+/* COMMAND ENGINE */
 
 function runCommand(cmd){
 
 let parts = cmd.split(" ");
+let command = parts[0];
 
-switch(parts[0]){
+switch(command){
 
 case "/help":
 
-printSystem(
-"/users /neofetch /clear /kick /broadcast"
-);
-
-break;
-
-/* USERS LIST */
-
-case "/users":
-
-get(ref(db,"users/"+room)).then(snapshot=>{
-
-let list = Object.keys(snapshot.val() || {});
-
-printSystem("Users: "+list.join(", "));
-
-});
+printSystem("Commands:");
+printSystem("/neofetch");
+printSystem("/users");
+printSystem("/rooms");
+printSystem("/whoami");
+printSystem("/ping");
+printSystem("/uptime");
+printSystem("/topic");
+printSystem("/msg");
+printSystem("/broadcast");
+printSystem("/kick");
+printSystem("/ban");
 
 break;
 
@@ -122,22 +133,110 @@ break;
 
 case "/neofetch":
 
-printSystem(
-`ShadowFax Network
-User: ${user}
-Room: ${room}
-System: Firebase RTDB
-Protocol: ShadowFax-1.0
-Users Online: loading...`
-);
+printSystem(" ");
+printSystem("   ███████ ");
+printSystem("   ██      ");
+printSystem("   █████   ");
+printSystem("       ██  ");
+printSystem("   █████   ");
+printSystem(" ");
+
+printSystem("ShadowFax Network");
+
+printSystem("User: " + user);
+printSystem("Room: " + room);
+printSystem("Database: Firebase RTDB");
+printSystem("Protocol: ShadowFax 1.0");
+
+get(ref(db,"users/"+room)).then(snapshot=>{
+
+let users = Object.keys(snapshot.val() || {});
+printSystem("Users Online: " + users.length);
+
+});
 
 break;
 
-/* CLEAR CHAT */
+/* USERS */
 
-case "/clear":
+case "/users":
 
-chatBox.innerHTML="";
+get(ref(db,"users/"+room)).then(snapshot=>{
+
+let users = Object.keys(snapshot.val() || {});
+printSystem("Users: " + users.join(", "));
+
+});
+
+break;
+
+/* ROOMS */
+
+case "/rooms":
+
+get(ref(db,"rooms")).then(snapshot=>{
+
+let rooms = Object.keys(snapshot.val() || {});
+printSystem("Rooms: " + rooms.join(", "));
+
+});
+
+break;
+
+/* WHOAMI */
+
+case "/whoami":
+
+printSystem("User: " + user);
+
+break;
+
+/* PING */
+
+case "/ping":
+
+printSystem("pong");
+
+break;
+
+/* UPTIME */
+
+case "/uptime":
+
+let sec = Math.floor((Date.now() - startTime)/1000);
+
+printSystem("Uptime: " + sec + " seconds");
+
+break;
+
+/* TOPIC */
+
+case "/topic":
+
+let topic = parts.slice(1).join(" ");
+
+push(ref(db,"messages/"+room),{
+user:"SYSTEM",
+msg:"Topic changed to: " + topic,
+time:new Date().toLocaleString()
+});
+
+break;
+
+/* PRIVATE MESSAGE */
+
+case "/msg":
+
+let target = parts[1];
+
+let message = parts.slice(2).join(" ");
+
+push(ref(db,"messages/"+room),{
+user:"PM "+user+" → "+target,
+msg:message,
+time:new Date().toLocaleString()
+});
+
 break;
 
 /* ADMIN COMMANDS */
@@ -149,11 +248,11 @@ printSystem("Admin only command");
 return;
 }
 
-let message = parts.slice(1).join(" ");
+let bc = parts.slice(1).join(" ");
 
 push(ref(db,"messages/"+room),{
 user:"ADMIN",
-msg:"[BROADCAST] "+message,
+msg:"[BROADCAST] " + bc,
 time:new Date().toLocaleString()
 });
 
@@ -166,13 +265,34 @@ printSystem("Admin only command");
 return;
 }
 
-let target = parts[1];
+let kickUser = parts[1];
 
-remove(ref(db,"users/"+room+"/"+target));
+remove(ref(db,"users/"+room+"/"+kickUser));
 
 push(ref(db,"messages/"+room),{
 user:"SYSTEM",
-msg:target+" was kicked by admin",
+msg:kickUser + " was kicked by admin",
+time:new Date().toLocaleString()
+});
+
+break;
+
+case "/ban":
+
+if(!admin){
+printSystem("Admin only command");
+return;
+}
+
+let banUser = parts[1];
+
+set(ref(db,"bans/"+room+"/"+banUser),true);
+
+remove(ref(db,"users/"+room+"/"+banUser));
+
+push(ref(db,"messages/"+room),{
+user:"SYSTEM",
+msg:banUser + " was banned",
 time:new Date().toLocaleString()
 });
 
@@ -186,14 +306,16 @@ printSystem("Unknown command");
 
 }
 
-/* PRINT SYSTEM MESSAGE */
+/* SYSTEM MESSAGE */
 
 function printSystem(text){
 
 let div = document.createElement("div");
 
-div.innerText = "[SYSTEM] "+text;
+div.innerText = "[SYSTEM] " + text;
 
 chatBox.appendChild(div);
+
+chatBox.scrollTop = chatBox.scrollHeight;
 
 }
