@@ -12,5 +12,4 @@ appId: "1:399136805462:web:c60c057b277b16204221f7"
 };
 
 const app = initializeApp(firebaseConfig);
-
 export const db = getDatabase(app);
