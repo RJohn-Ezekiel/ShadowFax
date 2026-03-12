@@ -1,101 +1,61 @@
 import { db } from "./firebase.js";
-import { ref, onChildAdded, set } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
-/* DOM ELEMENTS */
+import { ref,onChildAdded,set }
 
-const roomList = document.getElementById("roomList");
-const adminPanel = document.getElementById("adminPanel");
-const createBtn = document.getElementById("createRoomBtn");
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
-/* ADMIN CHECK */
+const roomList=document.getElementById("roomList");
 
-let admin = localStorage.getItem("shadowfaxAdmin") === "true";
+const adminPanel=document.getElementById("adminPanel");
 
-/* HIDE ADMIN PANEL FOR NORMAL USERS */
+let admin=localStorage.getItem("shadowfaxAdmin")==="true";
 
 if(!admin){
-adminPanel.style.display = "none";
+adminPanel.style.display="none";
 }
 
-/* LOAD ROOMS */
+onChildAdded(ref(db,"rooms"),data=>{
 
-onChildAdded(ref(db,"rooms"), snapshot => {
+let r=data.key;
 
-let room = snapshot.key;
+let div=document.createElement("div");
 
-let div = document.createElement("div");
+div.className="roomItem";
 
-div.className = "roomItem";
+div.innerHTML=`
 
-div.innerHTML = `
-<span>${room}</span>
-<button onclick="joinRoom('${room}')">JOIN</button>
+<span>${r}</span>
+
+<button onclick="joinRoom('${r}')">JOIN</button>
+
 `;
 
 roomList.appendChild(div);
 
 });
 
-/* JOIN ROOM */
+window.joinRoom=function(r){
 
-window.joinRoom = function(room){
+localStorage.setItem("shadowfaxRoom",r);
 
-localStorage.setItem("shadowfaxRoom", room);
-
-window.location = "room.html";
+window.location="room.html";
 
 }
-
-/* CREATE ROOM (ADMIN ONLY) */
 
 if(admin){
 
-createBtn.onclick = function(){
+document.getElementById("createRoomBtn").onclick=function(){
 
-let r = document.getElementById("roomname").value.trim();
-let p = document.getElementById("roompass").value.trim();
+let r=document.getElementById("roomname").value;
 
-if(!r){
-alert("enter room name");
-return;
-}
+let p=document.getElementById("roompass").value;
 
 set(ref(db,"rooms/"+r),{
+
 pass:p
+
 });
 
-};
-
-}
-
-/* THEME SYSTEM */
-
-document.getElementById("themeSelector").onchange = function(){
-
-let theme = this.value;
-
-localStorage.setItem("shadowfaxTheme", theme);
-
-applyTheme(theme);
-
-}
-
-function applyTheme(theme){
-
-if(theme === "green"){
-document.body.style.color = "#00ff00";
-}
-
-if(theme === "blue"){
-document.body.style.color = "#00aaff";
-}
-
-if(theme === "white"){
-document.body.style.color = "#ffffff";
 }
 
 }
-
-/* APPLY SAVED THEME */
-
-applyTheme(localStorage.getItem("shadowfaxTheme") || "green");
