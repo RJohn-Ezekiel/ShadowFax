@@ -1,34 +1,27 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-<title>ShadowFax Chat</title>
-
+<meta charset="UTF-8">
+<title>ShadowFax Room</title>
 <link rel="stylesheet" href="css/style.css">
-
+<script type="module" src="room.js"></script>
 </head>
-
 <body>
-
 <canvas id="matrixCanvas"></canvas>
 
-<div id="chatContainer">
-
-<h2>ShadowFax Terminal</h2>
+<div id="neofetch"></div>
 
 <div id="chatBox"></div>
+<input type="text" id="msg" placeholder="Type a message">
 
-<input id="msg" placeholder="type message...">
+<button onclick="clearChat()">Clear Chat</button>
 
-<button onclick="send()">Send</button>
+<select id="themeSelector">
+  <option value="green">Green</option>
+  <option value="blue">Blue</option>
+  <option value="white">White</option>
+</select>
 
-<button onclick="clearChat()">Clear</button>
-
-</div>
-
-<script src="js/matrix.js"></script>
-<script type="module" src="js/room.js"></script>
-
+<script type="module" src="js/matrix.js"></script>
 </body>
 </html>
