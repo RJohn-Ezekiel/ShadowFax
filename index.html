@@ -7,7 +7,7 @@
 
 <body>
 
-<canvas id="matrix"></canvas>
+<canvas id="matrixCanvas"></canvas>
 
 <div class="loginBox">
 
@@ -16,17 +16,12 @@
 <input id="username" placeholder="username">
 <input id="password" type="password" placeholder="password">
 
-<select id="role">
-<option value="user">User</option>
-<option value="admin">Admin</option>
-</select>
-
-<button id="loginBtn">Enter Network</button>
+<button onclick="login()">Login</button>
 
 </div>
 
-<script type="module" src="login.js"></script>
 <script src="matrix.js"></script>
+<script src="login.js"></script>
 
 </body>
 </html>
