@@ -7,36 +7,19 @@
 
 <body>
 
-<canvas id="matrix"></canvas>
+<div class="center">
 
-<div class="container">
+<h1 id="title">ShadowFax</h1>
 
-<h1 id="title"></h1>
+<input id="username" placeholder="username">
+<input id="password" type="password" placeholder="password">
 
-<input id="username" placeholder="username"><br>
-<input id="password" type="password" placeholder="password"><br>
-
-<button onclick="login()">ENTER</button>
+<button onclick="login()">Login</button>
+<a href="signup.html">Signup</a>
 
 </div>
 
-<script type="module" src="js/login.js"></script>
-<script src="js/matrix.js"></script>
-
-<script>
-const text="SHADOWFAX";
-let i=0;
-
-function type(){
-if(i<text.length){
-document.getElementById("title").innerHTML+=text.charAt(i);
-i++;
-setTimeout(type,120);
-}
-}
-
-type();
-</script>
+<script type="module" src="js/auth.js"></script>
 
 </body>
 </html>
