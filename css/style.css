@@ -16,11 +16,14 @@ z-index:-1;
 }
 
 #chatBox{
-height:500px;
-overflow-y:auto;
-border:1px solid #00ff00;
-padding:10px;
-margin-bottom:10px;
+background: rgba(0,0,0,0.92);   /* dark solid background */
+backdrop-filter: blur(2px);     /* optional smooth look */
+padding: 10px;
+height: 420px;
+overflow-y: scroll;
+border: 1px solid #00ff00;
+font-family: monospace;
+
 }
 
 input{
@@ -48,3 +51,4 @@ margin:auto;
 margin-top:200px;
 text-align:center;
 }
+
