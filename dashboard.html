@@ -4,22 +4,19 @@
 <head>
 
 <title>ShadowFax Network</title>
-
 <link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body>
 
+<canvas id="matrixCanvas"></canvas>
+
 <div class="container">
 
 <h1>ShadowFax Network</h1>
 
-<!-- ROOMS LIST -->
-
 <div id="roomList"></div>
-
-<!-- ADMIN PANEL -->
 
 <div id="adminPanel">
 
@@ -32,24 +29,10 @@
 
 </div>
 
-<!-- THEME SELECTOR -->
-
-<div class="themeBox">
-
-<select id="themeSelector">
-
-<option value="green">Green</option>
-<option value="blue">Blue</option>
-<option value="white">White</option>
-
-</select>
-
-</div>
-
 </div>
 
 <script type="module" src="js/dashboard.js"></script>
+<script src="js/matrix.js"></script>
 
 </body>
-
 </html>
