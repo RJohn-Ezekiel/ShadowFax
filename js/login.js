@@ -1,29 +1,68 @@
-const ADMIN_PASS="Eru_Iluvatar_031206";
-const FRIEND_PASS="Friend123";
+const ADMIN_PASS = "Eru_Iluvatar_031206";
+const FRIEND_PASS = "Friend123";
 
-window.login=function(){
+window.login = function(){
 
-let username=document.getElementById("username").value;
-let pass=document.getElementById("password").value;
+let username = document.getElementById("username").value.trim();
+let pass = document.getElementById("password").value.trim();
 
-const regex=/^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]+$/;
+/* username must contain letters and numbers */
 
-let isAdmin=false;
+const regex = /^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]+$/;
 
-if(username==="Admin" && pass===ADMIN_PASS){
-isAdmin=true;
-}
-else if(regex.test(username) && pass===FRIEND_PASS){
-isAdmin=false;
-}
-else{
-alert("Invalid login");
+let isAdmin = false;
+
+/* empty check */
+
+if(username === "" || pass === ""){
+alert("Enter username and password");
 return;
 }
 
-localStorage.setItem("shadowfaxUser",username);
-localStorage.setItem("shadowfaxAdmin",isAdmin);
+/* ADMIN LOGIN */
 
-window.location="dashboard.html";
+if(username === "Admin" && pass === ADMIN_PASS){
+
+isAdmin = true;
 
 }
+
+/* FRIEND LOGIN */
+
+else if(regex.test(username) && pass === FRIEND_PASS){
+
+isAdmin = false;
+
+}
+
+/* INVALID LOGIN */
+
+else{
+
+alert("Invalid login credentials");
+return;
+
+}
+
+/* STORE SESSION */
+
+localStorage.setItem("shadowfaxUser", username);
+localStorage.setItem("shadowfaxAdmin", isAdmin);
+
+/* optional session token */
+
+localStorage.setItem("shadowfaxSession", "session-" + Date.now());
+
+/* redirect */
+
+window.location = "dashboard.html";
+
+};
+
+document.addEventListener("keypress",function(e){
+
+if(e.key === "Enter"){
+login();
+}
+
+});
