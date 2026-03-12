@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
-<title>ShadowFax Chat</title>
-<link rel="stylesheet" href="css/style.css">
-
+<title>ShadowFax Room</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<canvas id="matrixCanvas"></canvas>
-
-<div class="container">
+<canvas id="matrix"></canvas>
 
 <h2 id="roomTitle"></h2>
 
 <div id="chatBox"></div>
 
-<input id="msgInput" placeholder="message">
+<div id="typingIndicator"></div>
+
+<input id="msgInput" placeholder="type message">
 
 <button id="sendBtn">Send</button>
-
 <button id="clearBtn">Clear Chat</button>
 
-</div>
-
-<script type="module" src="js/room.js"></script>
-<script src="js/matrix.js"></script>
+<script type="module" src="room.js"></script>
+<script src="matrix.js"></script>
 
 </body>
 </html>
