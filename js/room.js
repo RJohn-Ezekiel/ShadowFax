@@ -8,6 +8,8 @@ let admin=localStorage.getItem("shadowfaxAdmin")==="true";
 
 roomTitle.innerText="Room: "+room;
 
+/* timestamp */
+
 function ts(){
 
 let d=new Date();
@@ -23,6 +25,8 @@ return day+"/"+month+"/"+year+" "+h+":"+m;
 
 }
 
+/* system message */
+
 function system(msg){
 
 push(ref(db,"messages/"+room),{
@@ -35,9 +39,13 @@ time:ts()
 
 }
 
+/* register user */
+
 set(ref(db,"users/"+room+"/"+user),true);
 
 system(user+" joined");
+
+/* remove user on exit */
 
 window.addEventListener("beforeunload",()=>{
 
@@ -47,6 +55,8 @@ system(user+" left");
 
 });
 
+/* send message */
+
 sendBtn.onclick=send;
 
 msgInput.addEventListener("keypress",e=>{
@@ -55,13 +65,17 @@ if(e.key==="Enter") send();
 
 function send(){
 
-let msg=msgInput.value;
+let msg=msgInput.value.trim();
+
+if(msg==="") return;
 
 if(msg.startsWith("/")){
 command(msg);
 msgInput.value="";
 return;
 }
+
+/* normal chat */
 
 push(ref(db,"messages/"+room),{
 
@@ -75,14 +89,20 @@ msgInput.value="";
 
 }
 
+/* command system */
+
 function command(cmd){
 
 let p=cmd.split(" ");
+
+/* ping */
 
 if(cmd==="/ping"){
 print("SYSTEM","pong");
 return;
 }
+
+/* user list */
 
 if(cmd==="/users"){
 
@@ -98,6 +118,8 @@ return;
 
 }
 
+/* neofetch */
+
 if(cmd==="/neofetch"){
 
 print("SYSTEM","S");
@@ -109,6 +131,8 @@ print("SYSTEM","Admin: "+admin);
 return;
 
 }
+
+/* topic view */
 
 if(cmd==="/topic"){
 
@@ -122,12 +146,44 @@ return;
 
 }
 
+/* PRIVATE MESSAGE */
+
+if(p[0]==="/msg"){
+
+let target=p[1];
+let message=p.slice(2).join(" ");
+
+if(!target || message===""){
+print("SYSTEM","Usage: /msg username message");
+return;
+}
+
+/* send PM */
+
+push(ref(db,"private/"+target),{
+
+from:user,
+msg:message,
+time:ts()
+
+});
+
+print("SYSTEM","PM to "+target+": "+message);
+
+return;
+
+}
+
+/* admin commands */
+
 if(!admin){
 
 print("SYSTEM","Permission denied");
 return;
 
 }
+
+/* change topic */
 
 if(p[0]==="/topic"){
 
@@ -139,6 +195,8 @@ system("Topic changed to "+t);
 
 }
 
+/* kick user */
+
 if(p[0]==="/kick"){
 
 remove(ref(db,"users/"+room+"/"+p[1]));
@@ -146,6 +204,8 @@ remove(ref(db,"users/"+room+"/"+p[1]));
 system(p[1]+" was kicked");
 
 }
+
+/* broadcast */
 
 if(p[0]==="/broadcast"){
 
@@ -163,6 +223,8 @@ time:ts()
 
 }
 
+/* print local message */
+
 function print(u,m){
 
 let div=document.createElement("div");
@@ -177,6 +239,8 @@ div.innerHTML="["+ts()+"] <span style='color:"+color+"'>"+u+"</span>: "+m;
 chatBox.appendChild(div);
 
 }
+
+/* room messages */
 
 onChildAdded(ref(db,"messages/"+room),snap=>{
 
@@ -196,6 +260,24 @@ chatBox.appendChild(div);
 chatBox.scrollTop=chatBox.scrollHeight;
 
 });
+
+/* receive private messages */
+
+onChildAdded(ref(db,"private/"+user),snap=>{
+
+let m=snap.val();
+
+let div=document.createElement("div");
+
+div.style.color="orange";
+
+div.innerHTML="["+m.time+"] PM from "+m.from+": "+m.msg;
+
+chatBox.appendChild(div);
+
+});
+
+/* clear chat */
 
 clearBtn.onclick=function(){
 
