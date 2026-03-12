@@ -2,15 +2,19 @@
 <html>
 
 <head>
+
 <title>ShadowFax Login</title>
 <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body>
 
-<div class="centerBox">
+<canvas id="matrixCanvas"></canvas>
 
-<h1>ShadowFax</h1>
+<div class="loginBox">
+
+<h1 id="title">ShadowFax</h1>
 
 <input id="username" placeholder="username">
 
@@ -18,13 +22,10 @@
 
 <button id="loginBtn">Login</button>
 
-<p>
-<a href="signup.html">Create account</a>
-</p>
-
 </div>
 
 <script type="module" src="js/auth.js"></script>
+<script src="js/matrix.js"></script>
 
 </body>
 </html>
