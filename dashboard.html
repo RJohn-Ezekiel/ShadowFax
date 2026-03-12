@@ -1,41 +1,31 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
+<meta charset="UTF-8">
 <title>ShadowFax Dashboard</title>
-
 <link rel="stylesheet" href="css/style.css">
-
+<script type="module" src="dashboard.js"></script>
 </head>
-
 <body>
-
 <canvas id="matrixCanvas"></canvas>
-
-<div id="chatContainer">
-
-<h2>ShadowFax Network</h2>
-
-<h3>Available Rooms</h3>
-
-<div id="roomList"></div>
+<h2>Welcome <span id="userLabel"></span></h2>
 
 <div id="adminPanel">
-
-<h3>Create Room</h3>
-
-<input id="roomname" placeholder="room name">
-<input id="roompass" placeholder="room password">
-
-<button id="createRoomBtn">Create</button>
-
+  <h3>Create Room</h3>
+  <input type="text" id="roomname" placeholder="Room Name">
+  <input type="text" id="roompass" placeholder="Room Password">
+  <button id="createRoomBtn">Create Room</button>
 </div>
 
-</div>
+<h3>Available Rooms</h3>
+<div id="roomList"></div>
 
-<script src="js/matrix.js"></script>
-<script type="module" src="js/dashboard.js"></script>
+<select id="themeSelector">
+  <option value="green">Green</option>
+  <option value="blue">Blue</option>
+  <option value="white">White</option>
+</select>
 
+<script type="module" src="js/matrix.js"></script>
 </body>
 </html>
