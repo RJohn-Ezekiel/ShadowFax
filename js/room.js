@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-import { ref, push, onChildAdded, set, remove, get, onValue }
+import { ref,push,onChildAdded,set,remove,get }
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
 let user=localStorage.getItem("shadowfaxUser");
@@ -19,11 +19,11 @@ let year=d.getFullYear();
 let h=String(d.getHours()).padStart(2,'0');
 let m=String(d.getMinutes()).padStart(2,'0');
 
-return `${day}/${month}/${year} ${h}:${m}`;
+return day+"/"+month+"/"+year+" "+h+":"+m;
 
 }
 
-function sys(msg){
+function system(msg){
 
 push(ref(db,"messages/"+room),{
 
@@ -37,22 +37,20 @@ time:ts()
 
 set(ref(db,"users/"+room+"/"+user),true);
 
-sys(user+" joined");
+system(user+" joined");
 
 window.addEventListener("beforeunload",()=>{
 
 remove(ref(db,"users/"+room+"/"+user));
 
-sys(user+" left");
+system(user+" left");
 
 });
 
 sendBtn.onclick=send;
 
 msgInput.addEventListener("keypress",e=>{
-
 if(e.key==="Enter") send();
-
 });
 
 function send(){
@@ -60,12 +58,9 @@ function send(){
 let msg=msgInput.value;
 
 if(msg.startsWith("/")){
-
-runCommand(msg);
-
+command(msg);
 msgInput.value="";
 return;
-
 }
 
 push(ref(db,"messages/"+room),{
@@ -80,16 +75,13 @@ msgInput.value="";
 
 }
 
-function runCommand(cmd){
+function command(cmd){
 
 let p=cmd.split(" ");
 
 if(cmd==="/ping"){
-
 print("SYSTEM","pong");
-
 return;
-
 }
 
 if(cmd==="/users"){
@@ -108,7 +100,7 @@ return;
 
 if(cmd==="/neofetch"){
 
-print("SYSTEM"," S");
+print("SYSTEM","S");
 print("SYSTEM","ShadowFax Network");
 print("SYSTEM","User: "+user);
 print("SYSTEM","Room: "+room);
@@ -132,8 +124,7 @@ return;
 
 if(!admin){
 
-print("SYSTEM","permission denied");
-
+print("SYSTEM","Permission denied");
 return;
 
 }
@@ -144,7 +135,7 @@ let t=p.slice(1).join(" ");
 
 set(ref(db,"topics/"+room),t);
 
-sys("Topic changed to "+t);
+system("Topic changed to "+t);
 
 }
 
@@ -152,7 +143,7 @@ if(p[0]==="/kick"){
 
 remove(ref(db,"users/"+room+"/"+p[1]));
 
-sys(p[1]+" was kicked");
+system(p[1]+" was kicked");
 
 }
 
@@ -181,7 +172,7 @@ let color="lime";
 if(u==="SYSTEM") color="red";
 if(u==="ADMIN") color="deepskyblue";
 
-div.innerHTML=`[${ts()}] <span style="color:${color}">${u}</span>: ${m}`;
+div.innerHTML="["+ts()+"] <span style='color:"+color+"'>"+u+"</span>: "+m;
 
 chatBox.appendChild(div);
 
@@ -198,7 +189,7 @@ if(m.user==="ADMIN") color="deepskyblue";
 
 let div=document.createElement("div");
 
-div.innerHTML=`[${m.time}] <span style="color:${color}">${m.user}</span>: ${m.msg}`;
+div.innerHTML="["+m.time+"] <span style='color:"+color+"'>"+m.user+"</span>: "+m.msg;
 
 chatBox.appendChild(div);
 
@@ -208,6 +199,7 @@ chatBox.scrollTop=chatBox.scrollHeight;
 
 clearBtn.onclick=function(){
 
-if(admin) remove(ref(db,"messages/"+room));
+if(admin)
+remove(ref(db,"messages/"+room));
 
 }
