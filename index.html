@@ -1,25 +1,32 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>ShadowFax Room</title>
+
+<title>ShadowFax Login</title>
+
 <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body>
 
 <canvas id="matrixCanvas"></canvas>
 
-<h2 id="roomTitle"></h2>
+<div class="loginBox">
 
-<div id="chatBox"></div>
+<h1>ShadowFax Network</h1>
 
-<input id="msgInput" placeholder="type message">
-<button id="sendBtn">Send</button>
-<button id="clearBtn">Clear</button>
+<input id="username" placeholder="username">
 
-<script type="module" src="js/room.js"></script>
+<input id="password" type="password" placeholder="password">
+
+<button onclick="login()">Login</button>
+
+</div>
+
 <script src="js/matrix.js"></script>
+<script src="js/auth.js"></script>
 
 </body>
 </html>
-
