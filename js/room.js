@@ -1,4 +1,4 @@
-import { db, ref, push, onChildAdded, onValue, set, remove, get, onDisconnect } from "./firebase.js";
+import { db, ref, push, onChildAdded, set, remove, get, onDisconnect } from "./firebase.js";
 
 const terminal = document.getElementById("chatBox");
 const msg = document.getElementById("msg");
@@ -15,151 +15,89 @@ if(!username || !room){
     window.location="dashboard.html";
 }
 
-/* TIMESTAMP */
-
+/* Timestamp */
 function ts(){
     const d = new Date();
     return `[${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}:${String(d.getSeconds()).padStart(2,"0")}]`;
 }
 
-/* TERMINAL LOG */
-
+/* Terminal output */
 function log(text){
-    terminal.innerHTML += text + "<br>";
+    terminal.innerHTML += text+"<br>";
     terminal.scrollTop = terminal.scrollHeight;
 }
 
-/* FIREBASE PRESENCE SYSTEM */
-
-const connectedRef = ref(db, ".info/connected");
+/* USER PRESENCE */
 const userRef = ref(db, "rooms/" + room + "/users/" + username);
-
-onValue(connectedRef, (snap) => {
-
-    if (snap.val() === true) {
-
-        /* REMOVE USER ON DISCONNECT */
-        onDisconnect(userRef).remove();
-
-        /* ADD USER WHEN CONNECTED */
-        set(userRef, true);
-
-        /* SEND LEAVE MESSAGE ON DISCONNECT */
-
-        const leaveMsgRef = push(ref(db, "rooms/" + room + "/messages"));
-
-        onDisconnect(leaveMsgRef).set({
-            user: "system",
-            text: username + " left"
-        });
-
-    }
-
-});
+set(userRef, true);
 
 /* JOIN MESSAGE */
-
 push(ref(db, "rooms/" + room + "/messages"), {
     user: "system",
     text: username + " joined"
 });
 
+/* REMOVE USER ON DISCONNECT */
+onDisconnect(userRef).remove();
+
+/* SEND LEAVE MESSAGE ON DISCONNECT (FIXED: used set() instead of remove()) */
+const leaveMsgRef = push(ref(db, "rooms/" + room + "/messages"));
+onDisconnect(leaveMsgRef).set({
+    user: "system",
+    text: username + " left"
+});
+
+/* REMOVE USER IF TAB CLOSED */
+window.addEventListener("beforeunload", () => {
+    remove(userRef);
+});
+
 /* MESSAGE LISTENER */
-
 onChildAdded(ref(db, "rooms/" + room + "/messages"), data => {
-
     const m = data.val();
-
     let color = "#00ff00";
 
     if(m.user === "system") color = "#ff4444";
     else if(m.user === "Admin") color = "#00aaff";
 
     const formatted = m.text.replace(/\n/g, "<br>");
-
     log(`<span style="color:${color}">${ts()} ${m.user}:</span> ${formatted}`);
-
 });
 
 /* SEND MESSAGE */
-
 function send(){
-
     const text = msg.value.trim();
-
     if(!text) return;
 
-    /* ADMIN CLEAR CHAT */
-
-    if(admin && text === "/clear"){
-
-        remove(ref(db,"rooms/" + room + "/messages"));
-
-        terminal.innerHTML="";
-
-        push(ref(db,"rooms/" + room + "/messages"),{
-            user:"system",
-            text:"Admin cleared the chat"
+    /* ADMIN COMMANDS */
+    if(admin && text.startsWith("/broadcast ")){
+        push(ref(db, "rooms/" + room + "/messages"), {
+            user: "Admin",
+            text: text.replace("/broadcast ", "")
         });
-
     }
-
-    /* ADMIN BROADCAST */
-
-    else if(admin && text.startsWith("/broadcast ")){
-
-        push(ref(db,"rooms/" + room + "/messages"),{
-            user:"Admin",
-            text:text.replace("/broadcast ","")
-        });
-
-    }
-
-    /* ADMIN KICK */
-
     else if(admin && text.startsWith("/kick ")){
-
-        const target = text.replace("/kick ","");
-
-        if(target){
-
-            remove(ref(db,"rooms/" + room + "/users/" + target));
-
-            push(ref(db,"rooms/" + room + "/messages"),{
-                user:"system",
-                text:target + " was kicked"
+        const target = text.replace("/kick ", "");
+        // Only attempt to remove if target is not empty
+        if(target) {
+            remove(ref(db, "rooms/" + room + "/users/" + target));
+            push(ref(db, "rooms/" + room + "/messages"), {
+                user: "system",
+                text: target + " was kicked"
             });
-
         }
-
     }
-
     /* LIST USERS */
-
     else if(text === "/users"){
-
-        get(ref(db,"rooms/" + room + "/users")).then(snap => {
-
+        get(ref(db, "rooms/" + room + "/users")).then(snap => {
             const users = snap.val();
-
             let list = "";
-
-            if(users){
-                for(const u in users){
-                    list += u + " ";
-                }
-            }
-
+            for(const u in users) list += u + " ";
             log(`<span style="color:yellow">${ts()} Users:</span> ${list}`);
-
         });
-
     }
-
     /* NEOFETCH */
-
     else if(text === "/neofetch"){
-
         neofetch.innerHTML = `<pre>
 ███████╗
 ██╔════╝
@@ -170,67 +108,40 @@ function send(){
 Backend: Firebase
 Admin: ${admin}
 </pre>`;
-
     }
-
     /* NORMAL MESSAGE */
-
-    else{
-
-        push(ref(db,"rooms/" + room + "/messages"),{
-            user:username,
-            text:text
+    else {
+        push(ref(db, "rooms/" + room + "/messages"), {
+            user: username,
+            text: text
         });
-
     }
-
-    msg.value="";
+    msg.value = "";
 }
 
-/* SEND BUTTON */
-
+/* UI EVENT HANDLERS */
 sendBtn.onclick = send;
 
-/* ENTER / SHIFT+ENTER */
-
 msg.addEventListener("keydown", function(e){
-
     if(e.key === "Enter" && !e.shiftKey){
-
         e.preventDefault();
-
         send();
-
     }
-
 });
 
-/* LOCAL CLEAR CHAT BUTTON */
-
 window.clearChat = function(){
-
-    terminal.innerHTML="";
-
+    terminal.innerHTML = "";
 };
 
-/* THEMES */
-
-themeSelector.onchange=function(){
-
-    localStorage.setItem("shadowfaxTheme",this.value);
-
+themeSelector.onchange = function(){
+    localStorage.setItem("shadowfaxTheme", this.value);
     applyTheme(this.value);
-
 };
 
 function applyTheme(t){
-
-    if(t === "green") document.body.style.color="#00ff00";
-
-    if(t === "blue") document.body.style.color="#00aaff";
-
-    if(t === "white") document.body.style.color="#ffffff";
-
+    if(t === "green") document.body.style.color = "#00ff00";
+    if(t === "blue") document.body.style.color = "#00aaff";
+    if(t === "white") document.body.style.color = "#ffffff";
 }
 
 applyTheme(localStorage.getItem("shadowfaxTheme") || "green");
