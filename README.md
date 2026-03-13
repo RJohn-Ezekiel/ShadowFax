@@ -168,10 +168,10 @@ in your browser.
 
 ```
 [22:30:01] system: Admin joined
-[22:30:04] system: Rohan3 joined
-[22:30:10] Rohan3: hello
+[22:30:04] system: John3 joined
+[22:30:10] John3: hello
 [22:30:15] Admin: welcome
-[22:30:40] system: Rohan3 left
+[22:30:40] system: John3 left
 ```
 
 ---
