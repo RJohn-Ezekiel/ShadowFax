@@ -1,32 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>ShadowFax Room</title>
-<link rel="stylesheet" href="css/style.css">
-<script type="module" src="js/room.js"></script>
-</head>
-
 <body>
 
 <canvas id="matrixCanvas"></canvas>
 
 <div id="neofetch"></div>
 
-<div id="chatBox"></div>
+<div class="chatLayout">
 
-<textarea id="msg" placeholder="Type a message"></textarea>
+    <!-- CHAT AREA -->
+    <div class="chatMain">
 
-<button id="sendBtn">Send</button>
-<button onclick="clearChat()">Clear Chat</button>
+        <div id="chatBox"></div>
 
-<select id="themeSelector">
-<option value="green">Green</option>
-<option value="blue">Blue</option>
-<option value="white">White</option>
-</select>
+        <div id="typing"></div>
 
+        <textarea id="msg" placeholder="Type a message"></textarea>
+
+        <div class="controls">
+            <button id="sendBtn">Send</button>
+            <button onclick="clearChat()">Clear Chat</button>
+
+            <select id="themeSelector">
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="white">White</option>
+            </select>
+        </div>
+
+    </div>
+
+    <!-- USER SIDEBAR -->
+    <div class="chatSidebar">
+
+        <div class="sidebarTitle">ONLINE</div>
+
+        <div id="userList"></div>
+
+    </div>
+
+</div>
+
+<script type="module" src="js/room.js"></script>
 <script type="module" src="js/matrix.js"></script>
 
 </body>
-</html>
