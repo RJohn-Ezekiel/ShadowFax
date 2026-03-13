@@ -79,3 +79,52 @@ color:#00ff00;
 font-family:monospace;
 margin-bottom:10px;
 }
+
+.chatLayout{
+display:flex;
+gap:20px;
+}
+
+.chatMain{
+flex:3;
+}
+
+.chatSidebar{
+flex:1;
+background:rgba(0,0,0,0.9);
+border:1px solid #00ff00;
+padding:10px;
+height:520px;
+overflow-y:auto;
+}
+
+.sidebarTitle{
+color:#00ff00;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+#userList div{
+margin:5px 0;
+}
+
+#typing{
+color:yellow;
+font-size:12px;
+margin-top:5px;
+}
+
+textarea{
+background:black;
+color:#00ff00;
+border:1px solid #00ff00;
+width:100%;
+height:60px;
+padding:8px;
+font-family:monospace;
+resize:none;
+}
+
+.controls{
+margin-top:10px;
+}
