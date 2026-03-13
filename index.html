@@ -6,29 +6,35 @@
 <link rel="stylesheet" href="css/style.css">
 <script type="module" src="auth.js"></script>
 </head>
-<body>
-  <div class="loginBox">
-    <h1 id="shadowfaxTitle"></h1>
-    <input type="text" id="username" placeholder="Username"><br><br>
-    <input type="password" id="password" placeholder="Password"><br><br>
-    <button type="button" onclick="login()">Login</button>
-  </div>
 
-  <script type="module" src="js/matrix.js"></script>
-  <script type="module" src="auth.js"></script>
-  // Typing ShadowFax title
-  const title = "ShadowFax";
-  const el = document.getElementById("shadowfaxTitle");
-  let i=0;
-  function typeTitle(){
-    if(i<title.length){
-      el.innerHTML += title[i];
-      i++;
-      setTimeout(typeTitle,200);
-    }
+<body>
+
+<div class="loginBox">
+  <h1 id="shadowfaxTitle"></h1>
+
+  <input type="text" id="username" placeholder="Username"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+
+  <button type="button" onclick="login()">Login</button>
+</div>
+
+<script type="module" src="js/matrix.js"></script>
+
+<script>
+const title = "ShadowFax";
+const el = document.getElementById("shadowfaxTitle");
+let i = 0;
+
+function typeTitle(){
+  if(i < title.length){
+    el.innerHTML += title[i];
+    i++;
+    setTimeout(typeTitle, 200);
   }
-  typeTitle();
+}
+
+typeTitle();
 </script>
+
 </body>
 </html>
-
