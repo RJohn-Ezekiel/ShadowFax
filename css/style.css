@@ -14,6 +14,34 @@ left:0;
 width:100%;
 height:100%;
 z-index:-1;
+pointer-events:none;
+}
+
+/* Chat layout */
+.chatLayout{
+display:flex;
+gap:20px;
+}
+
+/* Main chat */
+.chatMain{
+flex:3;
+}
+
+/* Sidebar */
+.chatSidebar{
+flex:1;
+background:rgba(0,0,0,0.9);
+border:1px solid #00ff00;
+padding:10px;
+height:520px;
+overflow-y:auto;
+}
+
+.sidebarTitle{
+color:#00ff00;
+font-weight:bold;
+margin-bottom:10px;
 }
 
 /* Chat terminal */
@@ -24,6 +52,18 @@ height:420px;
 overflow-y:auto;
 border:1px solid #00ff00;
 font-family:monospace;
+}
+
+/* Typing indicator */
+#typing{
+color:yellow;
+font-size:12px;
+margin-top:5px;
+}
+
+/* User list */
+#userList div{
+margin:5px 0;
 }
 
 /* Inputs */
@@ -60,12 +100,17 @@ background:#00ff00;
 color:black;
 }
 
+/* Controls area */
+.controls{
+margin-top:10px;
+}
+
 /* Room list */
 .roomItem{
 margin:10px 0;
 }
 
-/* Login */
+/* Login box */
 .loginBox{
 width:300px;
 margin:auto;
@@ -78,53 +123,4 @@ text-align:center;
 color:#00ff00;
 font-family:monospace;
 margin-bottom:10px;
-}
-
-.chatLayout{
-display:flex;
-gap:20px;
-}
-
-.chatMain{
-flex:3;
-}
-
-.chatSidebar{
-flex:1;
-background:rgba(0,0,0,0.9);
-border:1px solid #00ff00;
-padding:10px;
-height:520px;
-overflow-y:auto;
-}
-
-.sidebarTitle{
-color:#00ff00;
-font-weight:bold;
-margin-bottom:10px;
-}
-
-#userList div{
-margin:5px 0;
-}
-
-#typing{
-color:yellow;
-font-size:12px;
-margin-top:5px;
-}
-
-textarea{
-background:black;
-color:#00ff00;
-border:1px solid #00ff00;
-width:100%;
-height:60px;
-padding:8px;
-font-family:monospace;
-resize:none;
-}
-
-.controls{
-margin-top:10px;
 }
