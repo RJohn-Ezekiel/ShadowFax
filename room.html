@@ -4,16 +4,22 @@
 <meta charset="UTF-8">
 <title>ShadowFax Room</title>
 <link rel="stylesheet" href="css/style.css">
-<script type="module" src="room.js"></script>
+
+<script type="module" src="js/room.js"></script>
+
 </head>
+
 <body>
+
 <canvas id="matrixCanvas"></canvas>
 
 <div id="neofetch"></div>
 
 <div id="chatBox"></div>
-<input type="text" id="msg" placeholder="Type a message">
 
+<textarea id="msg" placeholder="Type a message"></textarea>
+
+<button id="sendBtn">Send</button>
 <button onclick="clearChat()">Clear Chat</button>
 
 <select id="themeSelector">
@@ -23,5 +29,6 @@
 </select>
 
 <script type="module" src="js/matrix.js"></script>
+
 </body>
 </html>
