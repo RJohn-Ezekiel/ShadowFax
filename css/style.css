@@ -6,6 +6,7 @@ margin:0;
 padding:20px;
 }
 
+/* Matrix background */
 #matrixCanvas{
 position:fixed;
 top:0;
@@ -15,30 +16,43 @@ height:100%;
 z-index:-1;
 }
 
+/* Chat terminal */
 #chatBox{
-background: rgba(0,0,0,0.92);
-padding: 10px;
-height: 420px;
-overflow-y: scroll;
-border: 1px solid #00ff00;
-font-family: monospace;
+background:rgba(0,0,0,0.92);
+padding:10px;
+height:420px;
+overflow-y:auto;
+border:1px solid #00ff00;
+font-family:monospace;
 }
 
-input{
+/* Inputs */
+input,
+textarea{
 background:black;
 color:#00ff00;
-border: 1px solid #00ff00;
+border:1px solid #00ff00;
 width:100%;
 padding:8px;
+font-family:monospace;
 }
 
+/* Chat textarea */
+#msg{
+height:70px;
+resize:none;
+margin-top:10px;
+}
+
+/* Buttons */
 button{
 background:black;
 color:#00ff00;
 border:1px solid #00ff00;
-padding:5px;
+padding:6px 10px;
 margin:5px;
 cursor:pointer;
+font-family:monospace;
 }
 
 button:hover{
@@ -46,10 +60,12 @@ background:#00ff00;
 color:black;
 }
 
+/* Room list */
 .roomItem{
 margin:10px 0;
 }
 
+/* Login */
 .loginBox{
 width:300px;
 margin:auto;
@@ -57,7 +73,9 @@ margin-top:150px;
 text-align:center;
 }
 
+/* Neofetch block */
 #neofetch pre{
 color:#00ff00;
 font-family:monospace;
+margin-bottom:10px;
 }
