@@ -114,3 +114,4 @@ function applyTheme(t){
 }
 
 applyTheme(localStorage.getItem("shadowfaxTheme") || "green");
+
