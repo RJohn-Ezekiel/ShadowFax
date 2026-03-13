@@ -16,14 +16,16 @@ window.location="dashboard.html";
 }
 
 /* Timestamp */
+
 function ts(){
 const d = new Date();
 return `[${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}:${String(d.getSeconds()).padStart(2,"0")}]`;
 }
 
 /* Terminal output */
+
 function log(text){
-terminal.innerHTML += text+"<br>";
+terminal.innerHTML += text + "<br>";
 terminal.scrollTop = terminal.scrollHeight;
 }
 
@@ -34,18 +36,21 @@ const userRef = ref(db,"rooms/"+room+"/users/"+username);
 set(userRef,true);
 
 /* JOIN MESSAGE */
+
 push(ref(db,"rooms/"+room+"/messages"),{
 user:"system",
 text:username+" joined"
 });
 
-/* REMOVE USER ON DISCONNECT */
+/* REMOVE USER WHEN DISCONNECTED */
 
 onDisconnect(userRef).remove();
 
-/* SEND LEAVE MESSAGE */
+/* LEAVE MESSAGE ON DISCONNECT */
 
-onDisconnect(ref(db,"rooms/"+room+"/messages")).push({
+const leaveMsgRef = push(ref(db,"rooms/"+room+"/messages");
+
+onDisconnect(leaveMsgRef).set({
 user:"system",
 text:username+" left"
 });
@@ -60,14 +65,14 @@ remove(userRef);
 
 onChildAdded(ref(db,"rooms/"+room+"/messages"),data=>{
 
-const m=data.val();
+const m = data.val();
 
-let color="#00ff00";
+let color = "#00ff00";
 
 if(m.user==="system") color="#ff4444";
 else if(m.user==="Admin") color="#00aaff";
 
-const formatted=m.text.replace(/\n/g,"<br>");
+const formatted = m.text.replace(/\n/g,"<br>");
 
 log(`<span style="color:${color}">${ts()} ${m.user}:</span> ${formatted}`);
 
@@ -77,7 +82,7 @@ log(`<span style="color:${color}">${ts()} ${m.user}:</span> ${formatted}`);
 
 function send(){
 
-const text=msg.value.trim();
+const text = msg.value.trim();
 
 if(!text) return;
 
@@ -94,7 +99,7 @@ text:text.replace("/broadcast ","")
 
 else if(admin && text.startsWith("/kick ")){
 
-const target=text.replace("/kick ","");
+const target = text.replace("/kick ","");
 
 remove(ref(db,"rooms/"+room+"/users/"+target));
 
@@ -109,13 +114,15 @@ text:target+" was kicked"
 
 else if(text==="/users"){
 
-get(ref(db,"rooms/"+room+"/users")).then(snap=>{
+get(ref(db,"rooms/"+room+"/users")).then(snapshot=>{
 
-const users=snap.val();
+const users = snapshot.val();
 
 let list="";
 
-for(const u in users) list+=u+" ";
+for(const u in users){
+list += u+" ";
+}
 
 log(`<span style="color:yellow">${ts()} Users:</span> ${list}`);
 
@@ -156,7 +163,7 @@ msg.value="";
 
 /* SEND BUTTON */
 
-sendBtn.onclick=send;
+sendBtn.onclick = send;
 
 /* ENTER / SHIFT+ENTER */
 
@@ -165,7 +172,6 @@ msg.addEventListener("keydown",function(e){
 if(e.key==="Enter" && !e.shiftKey){
 
 e.preventDefault();
-
 send();
 
 }
@@ -174,15 +180,15 @@ send();
 
 /* CLEAR CHAT */
 
-window.clearChat=function(){
+window.clearChat = function(){
 
-terminal.innerHTML="";
+terminal.innerHTML = "";
 
 };
 
 /* THEMES */
 
-themeSelector.onchange=function(){
+themeSelector.onchange = function(){
 
 localStorage.setItem("shadowfaxTheme",this.value);
 
