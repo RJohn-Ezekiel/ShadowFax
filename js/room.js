@@ -20,18 +20,20 @@ window.location="dashboard.html";
 /* TIMESTAMP */
 
 function ts(){
-const d=new Date();
+const d = new Date();
 return `[${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}:${String(d.getSeconds()).padStart(2,"0")}]`;
 }
 
-/* TERMINAL */
+/* TERMINAL OUTPUT */
 
 function log(text){
-terminal.innerHTML += text+"<br>";
+terminal.innerHTML += text + "<br>";
 terminal.scrollTop = terminal.scrollHeight;
 }
 
-/* FIREBASE PRESENCE */
+/* ----------------------------- */
+/* USER PRESENCE (HEARTBEAT) */
+/* ----------------------------- */
 
 const connectedRef = ref(db,".info/connected");
 const userRef = ref(db,"rooms/"+room+"/users/"+username);
@@ -42,11 +44,16 @@ if(snap.val()===true){
 
 onDisconnect(userRef).remove();
 
-set(userRef,true);
+/* initial presence */
+set(userRef, Date.now());
+
+/* heartbeat every 5s */
+setInterval(()=>{
+set(userRef, Date.now());
+},5000);
 
 /* leave message */
-
-const leaveMsg=push(ref(db,"rooms/"+room+"/messages"));
+const leaveMsg = push(ref(db,"rooms/"+room+"/messages"));
 
 onDisconnect(leaveMsg).set({
 user:"system",
@@ -64,24 +71,34 @@ user:"system",
 text:username+" joined"
 });
 
+/* ----------------------------- */
 /* LIVE USER LIST */
+/* ----------------------------- */
 
-const usersRef=ref(db,"rooms/"+room+"/users");
+const usersRef = ref(db,"rooms/"+room+"/users");
 
-let liveUsers={};
+let liveUsers = {};
 
 onValue(usersRef,(snap)=>{
 
-liveUsers=snap.val() || {};
+const data = snap.val() || {};
+const now = Date.now();
+
+liveUsers = {};
+
+if(userList) userList.innerHTML="";
+
+for(const u in data){
+
+/* only users active in last 10 seconds */
+if(now - data[u] < 10000){
+
+liveUsers[u] = true;
 
 if(userList){
 
-userList.innerHTML="";
-
-for(const u in liveUsers){
-
-const div=document.createElement("div");
-div.textContent="● "+u;
+const div = document.createElement("div");
+div.textContent = "● " + u;
 
 if(u==="Admin") div.style.color="#00aaff";
 
@@ -91,28 +108,34 @@ userList.appendChild(div);
 
 }
 
+}
+
 });
 
+/* ----------------------------- */
 /* MESSAGE LISTENER */
+/* ----------------------------- */
 
 onChildAdded(ref(db,"rooms/"+room+"/messages"),data=>{
 
-const m=data.val();
+const m = data.val();
 
-let color="#00ff00";
+let color = "#00ff00";
 
 if(m.user==="system") color="#ff4444";
 else if(m.user==="Admin") color="#00aaff";
 
-const formatted=m.text.replace(/\n/g,"<br>");
+const formatted = m.text.replace(/\n/g,"<br>");
 
 log(`<span style="color:${color}">${ts()} ${m.user}:</span> ${formatted}`);
 
 });
 
+/* ----------------------------- */
 /* TYPING INDICATOR */
+/* ----------------------------- */
 
-const typingRef=ref(db,"rooms/"+room+"/typing/"+username);
+const typingRef = ref(db,"rooms/"+room+"/typing/"+username);
 
 msg.addEventListener("input",()=>{
 
@@ -126,35 +149,37 @@ remove(typingRef);
 
 onValue(ref(db,"rooms/"+room+"/typing"),snap=>{
 
-const data=snap.val();
+const data = snap.val();
 
 if(!data){
 typingBox.textContent="";
 return;
 }
 
-const users=Object.keys(data).filter(u=>u!==username);
+const users = Object.keys(data).filter(u=>u!==username);
 
 if(users.length===0){
 typingBox.textContent="";
 return;
 }
 
-typingBox.textContent=users.join(", ")+" typing...";
+typingBox.textContent = users.join(", ") + " typing...";
 
 });
 
+/* ----------------------------- */
 /* SEND MESSAGE */
+/* ----------------------------- */
 
 function send(){
 
-const text=msg.value.trim();
+const text = msg.value.trim();
 
 if(!text) return;
 
 /* ADMIN CLEAR */
 
-if(admin && text==="/clear"){
+if(admin && text === "/clear"){
 
 remove(ref(db,"rooms/"+room+"/messages"));
 
@@ -182,7 +207,7 @@ text:text.replace("/broadcast ","")
 
 else if(admin && text.startsWith("/kick ")){
 
-const target=text.replace("/kick ","");
+const target = text.replace("/kick ","");
 
 if(target && liveUsers[target]){
 
@@ -197,11 +222,11 @@ text:target+" was kicked"
 
 }
 
-/* USERS COMMAND */
+/* LIST USERS */
 
-else if(text==="/users"){
+else if(text === "/users"){
 
-const list=Object.keys(liveUsers).join(" ");
+const list = Object.keys(liveUsers).join(" ");
 
 log(`<span style="color:yellow">${ts()} Users:</span> ${list}`);
 
@@ -209,7 +234,7 @@ log(`<span style="color:yellow">${ts()} Users:</span> ${list}`);
 
 /* NEOFETCH */
 
-else if(text==="/neofetch"){
+else if(text === "/neofetch"){
 
 neofetch.innerHTML=`<pre>
 ███████╗
@@ -240,11 +265,11 @@ remove(typingRef);
 
 }
 
-/* SEND BUTTON */
+/* ----------------------------- */
+/* UI EVENTS */
+/* ----------------------------- */
 
-sendBtn.onclick=send;
-
-/* ENTER / SHIFT+ENTER */
+sendBtn.onclick = send;
 
 msg.addEventListener("keydown",(e)=>{
 
@@ -263,7 +288,9 @@ window.clearChat=function(){
 terminal.innerHTML="";
 };
 
+/* ----------------------------- */
 /* THEMES */
+/* ----------------------------- */
 
 themeSelector.onchange=function(){
 
